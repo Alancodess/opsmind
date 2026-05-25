@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<MockUser | null>(null);
-  const [workspaceId, setWorkspaceId] = useState(WORKSPACES[0].id);
+  const [workspaceId, setWorkspaceId] = useState<string>(WORKSPACES[0].id);
 
   const signIn = useCallback((email?: string) => {
     setSessionCookie();
