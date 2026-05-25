@@ -38,8 +38,13 @@ export async function POST(req: Request) {
         .select();
 
     if (error) {
+        console.log(error);
+
         return NextResponse.json(
-            { error: error.message },
+            {
+                error: error.message,
+                details: error,
+            },
             { status: 500 }
         );
     }
