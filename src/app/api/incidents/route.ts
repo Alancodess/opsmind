@@ -24,7 +24,7 @@ export async function GET() {
 export async function POST(req: Request) {
     const body = await req.json();
 
-    const { title, severity, status } = body;
+    const { title, severity } = body;
 
     const { data, error } = await supabase
         .from("incidents")
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             {
                 title,
                 severity,
-                status,
+                status: "open",
             },
         ])
         .select();
