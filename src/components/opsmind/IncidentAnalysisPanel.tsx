@@ -54,6 +54,7 @@ export function IncidentAnalysisPanel({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<IncidentAnalysis | null>(null);
+  const [analysisSource, setAnalysisSource] = useState("");
   const abortRef = useRef<AbortController | null>(null);
 
   const runAnalysis = useCallback(async (signal: AbortSignal) => {
@@ -83,6 +84,7 @@ export function IncidentAnalysisPanel({
 
       if ("analysis" in data) {
         setAnalysis(data.analysis);
+        setAnalysisSource(data.source || "");
       }
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
@@ -221,8 +223,12 @@ export function IncidentAnalysisPanel({
             </div>
 
             <footer className="shrink-0 border-t border-white/[0.06] px-5 py-3 sm:px-6">
+              <p className="mb-1 text-center text-[10px] text-[var(--text-muted)] sm:text-[11px]">
+                {analysisSource}
+              </p>
+
               <p className="text-center text-[10px] text-[var(--text-muted)] sm:text-[11px]">
-                Simulated OpsMind AI analysis · Operational guidance only
+                OpsMind AI analysis · Operational guidance only
               </p>
             </footer>
           </motion.aside>
@@ -346,7 +352,11 @@ function AnalysisResults({ analysis }: { analysis: IncidentAnalysis }) {
       <motion.div custom={4} variants={content}>
         <AnalysisBlock title="Affected infrastructure">
           <ul className="flex flex-wrap gap-2">
-            {analysis.affectedInfrastructure.map((item) => (
+            {(
+              Array.isArray(analysis.affectedInfrastructure)
+                ? analysis.affectedInfrastructure
+                : [analysis.affectedInfrastructure]
+            ).map((item) => (
               <li
                 key={item}
                 className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-[var(--text-secondary)]"
@@ -361,20 +371,21 @@ function AnalysisResults({ analysis }: { analysis: IncidentAnalysis }) {
   );
 }
 
-function ResolutionEstimate({ time }: { time: string }) {
+function ResolutionEstimate({ time }: { time?: string }) {
+  const safeTime = time || "Pending";
+
   const isComplete =
-    time.toLowerCase().includes("complete") ||
-    time.toLowerCase().includes("resolved") ||
-    time.toLowerCase().includes("closed");
+    safeTime.toLowerCase().includes("complete") ||
+    safeTime.toLowerCase().includes("resolved") ||
+    safeTime.toLowerCase().includes("closed");
 
   return (
     <div>
       <p
-        className={`text-lg font-semibold tracking-tight tabular-nums ${
-          isComplete ? "text-[var(--success)]" : "text-[var(--text-primary)]"
-        }`}
+        className={`text-lg font-semibold tracking-tight tabular-nums ${isComplete ? "text-[var(--success)]" : "text-[var(--text-primary)]"
+          }`}
       >
-        {time}
+        {safeTime}
       </p>
       <p className="mt-2 text-[11px] leading-relaxed text-[var(--text-muted)]">
         {isComplete
@@ -438,9 +449,8 @@ function AnalysisBlock({
 }) {
   return (
     <div
-      className={`rounded-xl border bg-[var(--bg-card)] p-4 sm:p-5 h-full ${
-        accent ? accent.border : "border-white/[0.08]"
-      }`}
+      className={`rounded-xl border bg-[var(--bg-card)] p-4 sm:p-5 h-full ${accent ? accent.border : "border-white/[0.08]"
+        }`}
       style={accent ? { boxShadow: accent.glow } : undefined}
     >
       <h3 className="text-[11px] font-medium uppercase tracking-[0.15em] text-[var(--text-muted)]">
@@ -451,8 +461,9 @@ function AnalysisBlock({
   );
 }
 
-function getSeverityTone(level: string) {
-  const lower = level.toLowerCase();
+function getSeverityTone(level?: string) {
+  const lower = level?.toLowerCase?.() || "medium";
+
   if (lower.includes("p1") || lower.includes("critical")) {
     return {
       text: "text-[var(--danger)]",
@@ -460,13 +471,20 @@ function getSeverityTone(level: string) {
       glow: "0 0 40px -16px rgba(248, 113, 113, 0.2)",
     };
   }
-  if (lower.includes("p2") || lower.includes("high")) {
+
+  if (
+    lower.includes("p2") ||
+    lower.includes("high") ||
+    lower.includes("warning") ||
+    lower.includes("medium")
+  ) {
     return {
       text: "text-[var(--warning)]",
       border: "border-[var(--warning)]/25",
       glow: "0 0 40px -16px rgba(251, 191, 36, 0.15)",
     };
   }
+
   return {
     text: "text-[var(--accent)]",
     border: "border-[var(--accent)]/20",
