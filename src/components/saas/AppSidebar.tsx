@@ -40,6 +40,26 @@ const NAV = [
         <path d="M2 7h14" stroke="currentColor" strokeWidth="1.3" />
       </svg>
     ),
+  }, {
+    href: "/incidents",
+    label: "Incidents",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+        <path
+          d="M9 2L16 14H2L9 2Z"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 6V10"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+        <circle cx="9" cy="12.5" r="0.8" fill="currentColor" />
+      </svg>
+    ),
   },
 ];
 
@@ -53,9 +73,8 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-white/[0.06] bg-[var(--bg-elevated)] transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${
-        open ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className={`fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-white/[0.06] bg-[var(--bg-elevated)] transition-transform duration-300 ease-out lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"
+        }`}
     >
       <div className="flex h-14 items-center gap-2.5 border-b border-white/[0.06] px-4 lg:h-16 lg:px-5">
         <Link href="/dashboard" onClick={onClose} className="flex items-center gap-2.5">
@@ -81,11 +100,10 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                active
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${active
                   ? "bg-white/[0.08] text-[var(--text-primary)]"
                   : "text-[var(--text-secondary)] hover:bg-white/[0.04] hover:text-[var(--text-primary)]"
-              }`}
+                }`}
             >
               <span className={active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}>
                 {item.icon}
