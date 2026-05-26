@@ -1,13 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function IncidentsPage() {
+    useEffect(() => {
+        fetchIncidents();
+    }, []);
+
+    async function fetchIncidents() {
+        try {
+            const res = await fetch("/api/incidents");
+            const data = await res.json();
+
+            setIncidents(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const [title, setTitle] = useState("");
     const [severity, setSeverity] = useState("medium");
     const [status, setStatus] = useState("open");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [incidents, setIncidents] = useState([]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -33,6 +48,7 @@ export default function IncidentsPage() {
             }
 
             setMessage("Incident created successfully");
+            await fetchIncidents();
 
             setTitle("");
             setSeverity("medium");
@@ -97,6 +113,33 @@ export default function IncidentsPage() {
                         {message}
                     </p>
                 )}
+
+                <div className="mt-10 space-y-4">
+                    <h2 className="text-xl font-semibold">
+                        Recent Incidents
+                    </h2>
+
+                    {incidents.map((incident: any) => (
+                        <div
+                            key={incident.id}
+                            className="rounded-lg border border-white/10 bg-white/5 p-4"
+                        >
+                            <div className="flex items-center justify-between">
+                                <h3 className="font-medium">
+                                    {incident.title}
+                                </h3>
+
+                                <span className="text-sm text-neutral-400">
+                                    {incident.severity}
+                                </span>
+                            </div>
+
+                            <p className="mt-2 text-sm text-neutral-500">
+                                Status: {incident.status}
+                            </p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </main>
     );
