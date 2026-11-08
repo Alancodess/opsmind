@@ -8,6 +8,7 @@ Live demo: opsmind-rlt5.vercel.app
 ![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat&logo=vercel&logoColor=white)
 ---
 Overview
+Live demo: opsmind-rlt5.vercel.app 
 OpsMind unifies incident response, observability, and AI-driven automation into a single command center. It gives engineering teams real-time visibility across their stack, surfaces anomalies before they become outages, and helps triage and resolve incidents faster.
 Features
 Operational Dashboard
